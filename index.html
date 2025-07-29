@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نموذج إدخال البيانات</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #4285f4;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: right;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #3367d6;
+        }
+        #message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>نموذج إدخال البيانات</h1>
+        <form id="dataForm">
+            <div class="form-group">
+                <label for="name">الاسم:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">الهاتف:</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            <button type="submit">إرسال البيانات</button>
+        </form>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        document.getElementById('dataForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // إظهار رسالة التحميل
+            const messageDiv = document.getElementById('message');
+            messageDiv.style.display = 'block';
+            messageDiv.textContent = 'جاري إرسال البيانات...';
+            messageDiv.className = '';
+            
+            // جمع البيانات من النموذج
+            const formData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value
+            };
+            
+            // عنوان تطبيق الويب الخاص بك
+            const webAppUrl = 'https://script.google.com/macros/s/AKfycbzZoMm1ziWaSRZRBx6qK0ygJZaNrbiPlwB94C2-AfpiSWbGImRSegOvCbPDQkxeIK_h/exec';
+            
+            // إرسال البيانات إلى Google Sheets
+            fetch(webAppUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(() => {
+                // إظهار رسالة النجاح
+                messageDiv.textContent = 'تم إرسال البيانات بنجاح!';
+                messageDiv.className = 'success';
+                
+                // مسح النموذج
+                document.getElementById('dataForm').reset();
+            })
+            .catch(error => {
+                // إظهار رسالة الخطأ
+                messageDiv.textContent = 'حدث خطأ أثناء إرسال البيانات: ' + error.message;
+                messageDiv.className = 'error';
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
